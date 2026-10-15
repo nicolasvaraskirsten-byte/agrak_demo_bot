@@ -1,0 +1,33 @@
+# Despliegue en Render: New > Blueprint > elegir este repositorio.
+services:
+  - type: web
+    name: agrak-demo-bot
+    runtime: node
+    plan: free            # cámbialo a "starter" (US$7/mes) para que nunca se duerma
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: APP_SECRET
+        generateValue: true
+      - key: HUMAN_NAME
+        value: Nicolás
+      - key: BOT_NAME
+        value: Asistente Agrak
+      - key: RECALL_API_KEY
+        sync: false
+      - key: RECALL_REGION
+        value: us-west-2
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TTS_PROVIDER
+        value: elevenlabs
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      - key: SUMMARY_WEBHOOK_URL
+        sync: false
