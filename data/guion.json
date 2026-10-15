@@ -1,0 +1,134 @@
+{
+  "_comentario": "Guion de la demo kickoff. Cada paso es lo que el asistente dice y muestra. Tipos: 'talk' (habla y sigue), 'ask' (pregunta y espera respuesta), 'qa' (ronda abierta de preguntas), 'close' (despedida y fin). {humano} se reemplaza por HUMAN_NAME del .env. 'slides' acepta imágenes (slides/figNN.jpg = figura NN del manual) o tarjetas {card}.",
+  "pasos": [
+    {
+      "id": "intro",
+      "tipo": "talk",
+      "titulo": "Bienvenida",
+      "slides": [{ "card": { "titulo": "Agrak", "subtitulo": "Demo de la plataforma de gestión agrícola", "pie": "Presenta: asistente virtual de Agrak" } }],
+      "decir": "Hola, ¿cómo están? Bienvenidos. Soy el asistente virtual de Agrak y {humano} me pidió que les muestre la plataforma. Les cuento de entrada que soy una inteligencia artificial: si algo no me queda claro, o es un tema comercial, lo anoto y {humano} les responde hoy mismo. La demo dura unos quince minutos y me pueden interrumpir cuando quieran; basta con que hablen y yo me detengo."
+    },
+    {
+      "id": "ask_operacion",
+      "tipo": "ask",
+      "titulo": "Su operación",
+      "slides": [{ "card": { "titulo": "Para enfocar la demo", "bullets": ["¿Cuántos campos tienen?", "¿Qué especies producen?", "¿Cuántas hectáreas, aproximadamente?"] } }],
+      "decir": "Antes de partir, para enfocar la demo: ¿me cuentan brevemente de su operación? Cuántos campos tienen, qué especies producen y más o menos cuántas hectáreas.",
+      "captura": "operacion"
+    },
+    {
+      "id": "estructura",
+      "tipo": "talk",
+      "titulo": "Cómo se organiza la información",
+      "slides": ["slides/fig01.jpg"],
+      "decir": "Agrak organiza todo en cuatro niveles: la empresa, los campos, los cuarteles, que son la unidad más pequeña, y las plantaciones, que son la especie y variedad de cada cuartel. Aquí ven el campo de demostración, Los Niches, con sus cuarteles dibujados sobre el mapa. Gracias a esa estructura, cada costo queda asignado por campo, cuartel, especie y variedad."
+    },
+    {
+      "id": "inicio",
+      "tipo": "talk",
+      "titulo": "Pantalla de inicio",
+      "slides": ["slides/fig03.jpg"],
+      "decir": "Esta es la pantalla de inicio. Cada persona ve un resumen de lo suyo: cuántas labores están por aprobar, en progreso o atrasadas, y una agenda de la semana. Cada tarjeta lleva directo al listado filtrado. Y todo esto también está en la aplicación del celular."
+    },
+    {
+      "id": "vistas",
+      "tipo": "talk",
+      "titulo": "Lista y carta Gantt",
+      "slides": ["slides/fig05.jpg", "slides/fig06.jpg"],
+      "decir": "Las labores se pueden ver de varias formas: en lista, agrupadas por estado, o en carta Gantt por día, semana o mes, donde cada color es un estado. Y pueden ver todos los campos juntos o uno a la vez."
+    },
+    {
+      "id": "proyectos",
+      "tipo": "talk",
+      "titulo": "Proyectos para varios campos",
+      "slides": ["slides/fig09.jpg", "slides/fig10.jpg"],
+      "decir": "Cuando necesitan pedirle algo a todos los campos a la vez, se usa un proyecto. Por ejemplo, un control de pre-cosecha que pide fotos a cada campo: aquí se ve qué campo ya lo vio, cuál lo terminó, y las evidencias de cada uno."
+    },
+    {
+      "id": "plantillas",
+      "tipo": "talk",
+      "titulo": "Labores desde plantilla",
+      "slides": ["slides/fig17.jpg", "slides/fig18.jpg"],
+      "decir": "Para crear labores, lo recomendado es usar plantillas. Es como el guardar como de Excel: en vez de partir de cero, toman una poda de invierno ya configurada, ajustan fechas y cuarteles, y listo. Además se define qué campos y qué personas pueden usar cada plantilla."
+    },
+    {
+      "id": "roles",
+      "tipo": "talk",
+      "titulo": "Roles y aprobación",
+      "slides": ["slides/fig33.jpg", "slides/fig35.jpg"],
+      "decir": "Cada labor tiene roles: el responsable que la ejecuta, el aprobador que la toma, un validador opcional y visualizadores. Cuando la gerencia crea una labor, queda por aprobar hasta que el administrador del campo la acepta. Así saben exactamente qué labores ya fueron tomadas y cuáles no."
+    },
+    {
+      "id": "ask_modelo",
+      "tipo": "ask",
+      "titulo": "¿Quién crea las labores?",
+      "slides": [{ "card": { "titulo": "¿Quién crea las labores hoy?", "bullets": ["Cada administrador de campo", "La gerencia, de forma centralizada", "La gerencia crea y el administrador aprueba"] } }],
+      "decir": "Una pregunta: hoy en su empresa, ¿quién crea y asigna los trabajos? ¿Lo define la gerencia, o cada administrador de campo organiza lo suyo?",
+      "captura": "modelo_labores"
+    },
+    {
+      "id": "chat",
+      "tipo": "talk",
+      "titulo": "El chat de cada labor",
+      "slides": ["slides/fig38.jpg", "slides/fig40.jpg"],
+      "decir": "Algo que les gusta mucho a nuestros clientes: cada labor tiene su propio chat. Mencionan a alguien con arroba, le llega una notificación al celular y lo lleva directo a la labor. Eso reemplaza los grupos de WhatsApp y deja registro de quién pidió qué, cuándo y por qué se cambió algo, incluso meses después."
+    },
+    {
+      "id": "avance",
+      "tipo": "talk",
+      "titulo": "Avance en terreno",
+      "slides": ["slides/fig11.jpg", "slides/fig12.jpg"],
+      "decir": "En las labores pagadas por producción, como poda o raleo, ven el avance en vivo. Aquí, por ejemplo, una aplicación de ochenta y una hectáreas lleva veintitrés aplicadas, con el detalle por cuartel. No hace falta subdividir los cuarteles: se registra cuánto se avanzó cada día."
+    },
+    {
+      "id": "mapa",
+      "tipo": "talk",
+      "titulo": "Mapa de trabajadores y costos",
+      "slides": ["slides/fig13.jpg", "slides/fig15.jpg"],
+      "decir": "En el mapa ven cuántos trabajadores hay en cada cuartel en este momento, con su contratista y hora de ingreso, y pueden activar capas de aplicaciones o de costos."
+    },
+    {
+      "id": "reporteria",
+      "tipo": "talk",
+      "titulo": "Reportería financiera",
+      "slides": ["slides/fig22.jpg", "slides/fig24.jpg", "slides/fig51.jpg"],
+      "decir": "Y todo esto termina en la reportería financiera: ingresos, costos y margen, por hectárea, por kilo o en pesos. Lo pueden agrupar por cuartel, especie o variedad, filtrar por etiquetas, como los cuarteles bajo techo, y exportarlo a Excel. Además, Agrak se puede integrar con el sistema contable."
+    },
+    {
+      "id": "ask_costos",
+      "tipo": "ask",
+      "titulo": "Sus costos hoy",
+      "slides": [{ "card": { "titulo": "¿Cómo calculan sus costos hoy?", "bullets": ["¿Por cuartel o por variedad?", "¿Usan algún ERP o planillas?"] } }],
+      "decir": "Les pregunto: ¿cómo están calculando hoy los costos por cuartel o por variedad? ¿Usan algún sistema contable o trabajan con planillas?",
+      "captura": "costos_actual"
+    },
+    {
+      "id": "usuarios",
+      "tipo": "talk",
+      "titulo": "Usuarios y accesos",
+      "slides": ["slides/fig59.jpg", "slides/fig60.jpg"],
+      "decir": "Sobre los usuarios: cada persona ve solo lo que necesita. Si a un supervisor le quitamos módulos, simplemente desaparecen de su menú y le queda una aplicación simple. La idea es que cada uno registre en terreno desde su celular, con foto y ubicación, en vez de anotar en papel y que otro lo digite."
+    },
+    {
+      "id": "implementacion",
+      "tipo": "talk",
+      "titulo": "Cómo es la implementación",
+      "slides": [{ "card": { "titulo": "Implementación", "bullets": ["1. Definiciones: campos, modelo de trabajo, centros de costo y accesos", "2. Carga de campos, cuarteles, plantaciones y usuarios", "3. Partida: riegos y labores de campo, en paralelo con aplicaciones", "4. Luego: mantenimiento, calicatas y maquinaria", "5. Capacitación en terreno con todo cargado"] } }],
+      "decir": "Por último, cómo es la implementación. Primero definimos con ustedes cuántos campos hay, el modelo de trabajo y los centros de costo. Luego cargamos campos, cuarteles y plantaciones, y creamos los usuarios. Partimos con las labores diarias, como riegos y labores de campo, en paralelo con las aplicaciones, y después sumamos mantenimiento, calicatas y maquinaria. Las capacitaciones en terreno se hacen cuando ya está todo cargado."
+    },
+    {
+      "id": "preguntas",
+      "tipo": "qa",
+      "titulo": "Preguntas",
+      "slides": [{ "card": { "titulo": "¿Preguntas?", "subtitulo": "Lo que no pueda responder, lo anoto para {humano}" } }],
+      "decir": "Eso es lo principal de Agrak. ¿Qué preguntas tienen?"
+    },
+    {
+      "id": "cierre",
+      "tipo": "close",
+      "titulo": "Cierre",
+      "slides": [{ "card": { "titulo": "¡Gracias!", "subtitulo": "{humano} los contactará para coordinar el siguiente paso" } }],
+      "decir": "Perfecto. Le voy a dejar a {humano} un resumen de esta conversación, con sus respuestas y preguntas, y les va a escribir para coordinar el siguiente paso. ¡Muchas gracias por su tiempo, que estén muy bien!"
+    }
+  ]
+}
