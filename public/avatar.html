@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Asistente Agrak</title>
+<meta name="viewport" content="width=1280, initial-scale=1">
+<style>
+  :root {
+    --green: #0f5c4a;
+    --green-2: #13755d;
+    --mint: #3ecf9b;
+    --ink: #0e1b17;
+    --paper: #f4f7f5;
+    --muted: #6b7c75;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--ink); font-family: "Inter", "Segoe UI", system-ui, sans-serif; color: var(--ink); }
+
+  #stage { position: absolute; inset: 0 0 112px 0; display: flex; flex-direction: column; background: var(--paper); }
+  #top { height: 48px; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: #fff; border-bottom: 1px solid #e3e9e6; }
+  #brand { font-weight: 800; font-size: 20px; color: var(--green); letter-spacing: -0.02em; }
+  #title { font-size: 17px; font-weight: 600; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #progress { display: flex; gap: 5px; }
+  #progress i { width: 18px; height: 5px; border-radius: 3px; background: #d6e0dc; }
+  #progress i.done { background: var(--green-2); }
+  #progress i.now { background: var(--mint); }
+
+  #slide { flex: 1; position: relative; overflow: hidden; }
+  #slide img { position: absolute; inset: 12px 24px; width: calc(100% - 48px); height: calc(100% - 24px); object-fit: contain; opacity: 0; transition: opacity .5s ease; border-radius: 6px; }
+  #slide img.on { opacity: 1; box-shadow: 0 6px 24px rgba(14, 27, 23, .12); }
+
+  .card { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 120px; background: radial-gradient(120% 140% at 0% 0%, var(--green-2), var(--green) 55%, #0a3f33); color: #fff; opacity: 0; transition: opacity .5s ease; }
+  .card.on { opacity: 1; }
+  .card h1 { font-size: 64px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+  .card h2 { font-size: 26px; font-weight: 400; margin-top: 18px; color: #cfeee2; }
+  .card ul { list-style: none; padding: 0; margin-top: 30px; display: grid; gap: 14px; }
+  .card li { font-size: 26px; padding-left: 30px; position: relative; color: #eafff6; }
+  .card li::before { content: ""; position: absolute; left: 0; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--mint); }
+  .card .foot { position: absolute; left: 120px; bottom: 36px; font-size: 18px; color: #a9d9c7; }
+
+  #bar { position: absolute; left: 0; right: 0; bottom: 0; height: 112px; display: flex; align-items: center; gap: 20px; padding: 0 28px; background: #0b1714; color: #fff; }
+  #avatar { width: 72px; height: 72px; border-radius: 50%; flex: none; display: grid; place-items: center; font-weight: 800; font-size: 30px; background: linear-gradient(140deg, var(--mint), var(--green-2)); color: #06251d; position: relative; }
+  #avatar::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 3px solid var(--mint); opacity: 0; transform: scale(.92); transition: opacity .2s, transform .2s; }
+  body.talking #avatar::after { opacity: .9; animation: pulse 1.1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(.95); } 50% { transform: scale(1.04); } }
+  #who { flex: none; width: 170px; }
+  #who b { display: block; font-size: 18px; }
+  #who span { font-size: 13px; color: #8fb3a6; }
+  #caption { flex: 1; font-size: 21px; line-height: 1.35; color: #f2fbf7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  #caption.dim { color: #7f9d93; font-style: italic; }
+  #dots { display: none; gap: 6px; }
+  body.thinking #dots { display: flex; }
+  #dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--mint); animation: blink 1s infinite; }
+  #dots i:nth-child(2) { animation-delay: .15s; } #dots i:nth-child(3) { animation-delay: .3s; }
+  @keyframes blink { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
+
+  /* Modo ensayo (solo en tu navegador) */
+  #rehearsal { display: none; position: absolute; right: 24px; top: 60px; width: 360px; background: #fff; border: 1px solid #d9e3df; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.15); padding: 12px; font-size: 14px; }
+  body.preview #rehearsal { display: block; }
+  #rehearsal form { display: flex; gap: 8px; }
+  #rehearsal input { flex: 1; padding: 8px 10px; border: 1px solid #c9d6d1; border-radius: 6px; font: inherit; }
+  #rehearsal button { padding: 8px 12px; border: 0; border-radius: 6px; background: var(--green); color: #fff; font: inherit; cursor: pointer; }
+  #heard { margin-top: 8px; max-height: 120px; overflow: auto; color: var(--muted); }
+  #unlock { display: none; position: absolute; inset: 0; background: rgba(11,23,20,.82); place-items: center; z-index: 10; }
+  body.preview.locked #unlock { display: grid; }
+  #unlock button { font: 600 22px/1 inherit; padding: 18px 28px; border-radius: 10px; border: 0; background: var(--mint); color: #06251d; cursor: pointer; }
+</style>
+</head>
+<body class="locked">
+  <div id="stage">
+    <div id="top"><div id="brand">agrak</div><div id="title">Demo de la plataforma</div><div id="progress"></div></div>
+    <div id="slide"></div>
+  </div>
+  <div id="bar">
+    <div id="avatar">A</div>
+    <div id="who"><b>Asistente Agrak</b><span>Asistente virtual · IA</span></div>
+    <div id="caption" class="dim">Conectando…</div>
+    <div id="dots"><i></i><i></i><i></i></div>
+  </div>
+
+  <div id="rehearsal">
+    <b>Ensayo</b> — escribe como si fueras el cliente:
+    <form id="f"><input id="q" placeholder="Ej: ¿funciona sin señal en el campo?" autocomplete="off"><button>Decir</button></form>
+    <div id="heard"></div>
+  </div>
+  <div id="unlock"><button id="go">▶ Comenzar ensayo con audio</button></div>
+
+<script>
+(() => {
+  const qs = new URLSearchParams(location.search);
+  const session = qs.get('session'), token = qs.get('token') || '';
+  const preview = qs.get('preview') === '1';
+  if (preview) document.body.classList.add('preview'); else document.body.classList.remove('locked');
+
+  const $ = (id) => document.getElementById(id);
+  const slideEl = $('slide'), caption = $('caption');
+  let ws, audio = null, current = null, slides = [], slideIdx = 0, slideTimer = null;
+
+  const send = (m) => ws && ws.readyState === 1 && ws.send(JSON.stringify(m));
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function renderSlides(list) {
+    slideEl.innerHTML = '';
+    slides = list.map((s) => {
+      let el;
+      if (s.img) { el = new Image(); el.src = s.img; el.alt = ''; }
+      else {
+        const c = s.card || {};
+        el = document.createElement('div'); el.className = 'card';
+        el.innerHTML = `<h1>${esc(c.titulo)}</h1>` +
+          (c.subtitulo ? `<h2>${esc(c.subtitulo)}</h2>` : '') +
+          (c.bullets ? `<ul>${c.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : '') +
+          (c.pie ? `<div class="foot">${esc(c.pie)}</div>` : '');
+      }
+      slideEl.appendChild(el);
+      return el;
+    });
+    showSlide(0);
+  }
+  function showSlide(i) {
+    slideIdx = i;
+    slides.forEach((el, k) => el.classList.toggle('on', k === i));
+  }
+  function cycleSlides(totalMs) {
+    clearInterval(slideTimer);
+    if (slides.length < 2 || !totalMs) return;
+    const each = totalMs / slides.length;
+    showSlide(0);
+    let k = 0;
+    slideTimer = setInterval(() => { k++; if (k >= slides.length) return clearInterval(slideTimer); showSlide(k); }, each);
+  }
+
+  function setProgress(index, total) {
+    const p = $('progress'); p.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const d = document.createElement('i');
+      if (i < index) d.className = 'done'; else if (i === index) d.className = 'now';
+      p.appendChild(d);
+    }
+  }
+
+  // Subtítulos por frase, sincronizados en proporción a la duración del audio.
+  let capTimers = [];
+  function captions(text, totalMs) {
+    capTimers.forEach(clearTimeout); capTimers = [];
+    const parts = [];
+    for (const piece of text.match(/[^.!?;:]+[.!?;:]*\s*/g) || [text]) {
+      const last = parts[parts.length - 1];
+      if (last && (last.length < 40 || piece.trim().length < 25)) parts[parts.length - 1] = last + piece; else parts.push(piece);
+    }
+    const total = text.length; let acc = 0;
+    caption.classList.remove('dim');
+    parts.forEach((p) => {
+      const at = totalMs ? (acc / total) * totalMs : 0;
+      capTimers.push(setTimeout(() => { caption.textContent = p.trim(); }, at));
+      acc += p.length;
+    });
+  }
+
+  function stopAudio() {
+    capTimers.forEach(clearTimeout); capTimers = [];
+    if (audio) { audio.onended = audio.onerror = null; audio.pause(); audio = null; }
+    document.body.classList.remove('talking');
+  }
+
+  function say(m) {
+    stopAudio();
+    current = m.id;
+    if (!m.audio) { cycleSlides(m.estMs); captions(m.text, m.estMs); return; }
+    captions(m.text, 0);
+    const a = new Audio(m.audio);
+    audio = a;
+    a.onloadedmetadata = () => { const ms = (a.duration || m.estMs / 1000) * 1000; cycleSlides(ms); captions(m.text, ms); };
+    a.onplay = () => { document.body.classList.add('talking'); if (a.duration) send({ type: 'playing', id: m.id, durMs: Math.round(a.duration * 1000) }); };
+    a.onended = () => { document.body.classList.remove('talking'); if (audio === a) { audio = null; send({ type: 'ended', id: m.id }); } };
+    a.onerror = () => { document.body.classList.remove('talking'); if (audio === a) { audio = null; send({ type: 'ended', id: m.id }); } };
+    a.play().catch(() => { cycleSlides(m.estMs); captions(m.text, m.estMs); setTimeout(() => send({ type: 'ended', id: m.id }), m.estMs); });
+  }
+
+  function connect() {
+    const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+    ws = new WebSocket(`${proto}://${location.host}/ws?session=${encodeURIComponent(session)}&token=${encodeURIComponent(token)}`);
+    ws.onopen = () => { if (caption.textContent === 'Conectando…') caption.textContent = 'En un momento comenzamos…'; };
+    ws.onclose = (e) => { if (e.code === 4004 || e.code === 4001) { caption.textContent = 'Sesión no válida.'; return; } setTimeout(connect, 1500); };
+    ws.onmessage = (ev) => {
+      const m = JSON.parse(ev.data);
+      if (m.type === 'show') { $('title').textContent = m.title; setProgress(m.index, m.total); clearInterval(slideTimer); renderSlides(m.slides || []); }
+      else if (m.type === 'say') say(m);
+      else if (m.type === 'stop') { if (m.id === current) { stopAudio(); clearInterval(slideTimer); caption.classList.add('dim'); caption.textContent = 'Te escucho…'; } }
+      else if (m.type === 'thinking') document.body.classList.toggle('thinking', m.on);
+      else if (m.type === 'heard') { const d = document.createElement('div'); d.textContent = `${m.speaker || 'Participante'}: ${m.text}`; $('heard').prepend(d); }
+      else if (m.type === 'end') { setTimeout(() => { caption.classList.add('dim'); caption.textContent = 'Reunión finalizada. ¡Gracias!'; }, 500); }
+    };
+  }
+
+  $('f').onsubmit = (e) => { e.preventDefault(); const t = $('q').value.trim(); if (!t) return; send({ type: 'text', text: t }); $('q').value = ''; };
+  $('go').onclick = () => { document.body.classList.remove('locked'); new Audio().play().catch(() => {}); connect(); };
+  if (!preview) connect();
+})();
+</script>
+</body>
+</html>
